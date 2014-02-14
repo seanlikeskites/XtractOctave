@@ -13,6 +13,16 @@ You will need LibXtract, which you can find here:
 
 You will also need the Octave package developer libraries. These are available in the octave-pkg-dev package in ubuntu. 
 
+## Installation
+
+Install the above dependencies first, then (all being well) running make in the XtractOctave directory should build everything for you.
+
+If that worked there should now be a load of .oct file in the directory. If these files are in Octave's search path the functions should all be usable.
+
+## Documentation
+
+Documentation is available in the same way it is for all Octave functions, using the help command in the octave prompt.
+
 ## License 
 
 Copyright (C) 2014 Sean Enderby
