@@ -1,0 +1,4 @@
+*.oct
+octave-core
+*.o
+*.swp
