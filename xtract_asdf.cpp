@@ -45,7 +45,7 @@ DEFUN_DLD (xtract_asdf, args, nargout,
         int inputLength = input.length();
         const double* inputData = input.data();
 
-        // get asdf
+        // find asdf
         OCTAVE_LOCAL_BUFFER (double, asdf, inputLength);
         xtract_asdf (inputData, inputLength, NULL, asdf);
 

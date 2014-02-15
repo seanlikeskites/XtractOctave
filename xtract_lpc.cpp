@@ -24,12 +24,12 @@
 #include <octave/oct.h>
 #include <xtract/libxtract.h>
 
-DEFUN_DLD (xtract_amdf, args, nargout,
+DEFUN_DLD (xtract_lpc, args, nargout,
 "-*- texinfo -*-\n"
-"@deftypefn {Function File} {} xtract_amdf (@var{data})\n"
-"Calculate the average magnitude difference function of the signal @var{data}.\n"
+"@deftypefn {Function File} {} xtract_lpc (@var{data})\n"
+"Calculate the linear predictive coding coefficients of the signal @var{data}.\n"
 "\n"
-"A wrapper for LibXtract\'s xtract_amdf function.\n"
+"A wrapper for LibXtract\'s xtract_lpc function.\n"
 "@end deftypefn\n")
 {
     // make sure the correct amount of arguments have been passed
@@ -45,16 +45,21 @@ DEFUN_DLD (xtract_amdf, args, nargout,
         int inputLength = input.length();
         const double* inputData = input.data();
 
-        // find amdf
-        OCTAVE_LOCAL_BUFFER (double, amdf, inputLength);
-        xtract_amdf (inputData, inputLength, NULL, amdf);
+        // autocorrelate the input
+        OCTAVE_LOCAL_BUFFER (double, autocorrelation, inputLength);
+        xtract_autocorrelation (inputData, inputLength, NULL, autocorrelation);
+
+        // find lpc
+        int outputLength = 2 * (inputLength - 1);
+        OCTAVE_LOCAL_BUFFER (double, lpc, outputLength);
+        xtract_lpc (autocorrelation, inputLength, NULL, lpc);
 
         // put into an output vector
-        RowVector output (inputLength);
-        int n = inputLength;
+        RowVector output (outputLength);
+        int n = outputLength;
         while (n--)
         {
-            output (n) = amdf [n];
+            output (n) = lpc [n];
         }
 
         return octave_value (output);
