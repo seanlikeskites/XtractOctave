@@ -46,7 +46,7 @@ DEFUN_DLD (xtract_hps, args, nargout,
 
         int paddedLength = pow (2, ceil (log2 (inputLength)));
 
-        // zero pad the input so it is a hps of 2 in length
+        // zero pad the input so it is a power of 2 in length
         OCTAVE_LOCAL_BUFFER (double, paddedInput, paddedLength);
         for (int i = 0; i < paddedLength; ++i)
         {
@@ -60,7 +60,11 @@ DEFUN_DLD (xtract_hps, args, nargout,
             }
         }
 
-        double argumentArray [4] = {0, XTRACT_MAGNITUDE_SPECTRUM, 0, 0};
+        // get sample rate
+        double fs = args (1).double_value();
+        double sampleRateByN = fs / paddedLength;
+
+        double argumentArray [4] = {sampleRateByN, XTRACT_MAGNITUDE_SPECTRUM, 0, 0};
 
         // assign memory for the output of the xtract_spectrum function
         OCTAVE_LOCAL_BUFFER (double, spectrum, paddedLength);
@@ -68,13 +72,10 @@ DEFUN_DLD (xtract_hps, args, nargout,
         // initialise and run the fft
         xtract_init_fft (paddedLength, XTRACT_SPECTRUM);
         xtract_spectrum (paddedInput, paddedLength, argumentArray, spectrum);
-        
-        // get sample rate
-        double fs = args (1).double_value();
 
-        // find the spectral centroid
+        // find f0
         double hps = 0;
-        int test = xtract_hps (spectrum, paddedLength / 2, &fs, &hps);
+        int test = xtract_hps (spectrum, paddedLength, &fs, &hps);
 
         return octave_value (hps);
     }
