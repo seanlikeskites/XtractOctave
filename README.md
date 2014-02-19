@@ -11,11 +11,6 @@ Windows is a completely different matter and will probably take a lot of work.
 You will need LibXtract, which you can find here:
 https://github.com/jamiebullock/LibXtract/
 
-For the moment the 'harmonic product spectrum' and 'irregularity' functions don't work properly with that version of LibXtract. 
-
-I have a fork of LibXtract which they work with however.
-https://github.com/seanlikeskites/LibXtract/
-
 You will also need the Octave package developer libraries. These are available in the octave-pkg-dev package in ubuntu. 
 
 ## Installation
