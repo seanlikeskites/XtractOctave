@@ -113,7 +113,7 @@ DEFUN_DLD (xtract_odd_even_ratio, args, nargout,
 
         // find the ratio of odd to even harmonics
         double oddEvenRatio = 0;
-        xtract_odd_even_ratio (harmonics, paddedLength / 2, NULL, &oddEvenRatio);
+        xtract_odd_even_ratio (harmonics, paddedLength, &f0, &oddEvenRatio);
 
         return octave_value (oddEvenRatio);
     }
