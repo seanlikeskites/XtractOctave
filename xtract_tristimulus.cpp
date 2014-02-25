@@ -26,24 +26,24 @@
 
 DEFUN_DLD (xtract_tristimulus, args, nargout,
 "-*- texinfo -*-\n"
-"@deftypefn {Function File} {} xtract_tristimulus (@var{data}, @var{fs}, @var{order})\n"
-"@deftypefnx {Function File} {} xtract_tristimulus (@var{data}, @var{fs}, @var{order}, @var{f0})\n"
-"@deftypefnx {Function File} {} xtract_tristimulus (@var{data}, @var{fs}, @var{order}, @var{f0}, @var{threshold})\n"
+"@deftypefn {Function File} {} xtract_tristimulus (@var{data}, @var{fs}, @var{order}, @var{f0})\n"
+"@deftypefnx {Function File} {} xtract_tristimulus (@var{data}, @var{fs}, @var{order}, @var{f0}, @var{allpartials})\n"
+"@deftypefnx {Function File} {} xtract_tristimulus (@var{data}, @var{fs}, @var{order}, @var{f0}, @var{allpartials}, @var{threshold})\n"
 "Calculate the tristimulus of order @var{order} of the signal @var{data} with sample rate @var{fs}.\n"
 "\n"
 "A wrapper for LibXtract\'s xtract_tristimulus functions.\n"
 "\n"
 "The third argument @var{order} is the order to the tristimulus to calculate. It can be either 1, 2 or 3.\n"
 "\n"
-"If only three input arguments are given the calculation is made using all the spectral partials of the input signal. Passing more input arguments will cause only the harmonics to be taken into account.\n"
+"The fourth argument @var{f0} is the fundamental frequency of the input signal.\n"
 "\n"
-"@var{f0} is the fundamental frequency of the input signal and is needed to find the harmonics of the input signal.\n"
+"@var{allpartials} is a optional boolean argument. If TRUE all the partials of the input signal will be considered rather than just the harmonics. The default value is FALSE.\n"
 "\n"
 "@var{threshold} is the threshold used when finding the harmonic partials. It takes a value between 0 and 1 inclusive. If no value is given this will be set to 0.2.\n"
 "@end deftypefn\n")
 {
     // make sure the correct amount of arguments have been passed
-    if (! ((args.length() > 2) && (args.length() < 6)))
+    if (! ((args.length() > 3) && (args.length() < 7)))
     {
         print_usage();
         return octave_value_list();
@@ -92,15 +92,14 @@ DEFUN_DLD (xtract_tristimulus, args, nargout,
         xtract_peak_spectrum (spectrum, paddedLength / 2, argumentArray, peaks);
 
         // get all partials setting
-        bool allPartials = 0;
-        if (args.length() > 3)
+        bool allPartials = false;
+        if (args.length() > 4)
         {
-            allPartials = false;
+            allPartials = args (4).bool_value();
         }
-        else
-        {
-            allPartials = true;
-        }
+
+        // get f0
+        double f0 = args (3).double_value();
 
         // a pointer to point to the peak data which will be used
         double* spectrumDataToUse;
@@ -111,14 +110,11 @@ DEFUN_DLD (xtract_tristimulus, args, nargout,
         }
         else
         {
-            // get f0
-            double f0 = args (3).double_value();
-
             // get threshold
             double threshold = 0;
-            if (args.length() == 5)
+            if (args.length() == 6)
             {
-                threshold = args (4).double_value();
+                threshold = args (5).double_value();
 
                 // make sure threshold is within the correct range
                 if (! ((threshold >= 0) && (threshold <=1)))
@@ -156,7 +152,6 @@ DEFUN_DLD (xtract_tristimulus, args, nargout,
         double tristimulus = 0;
         double tristimulusExtracted;
 
-        double f0 = args (3).double_value();
         switch (order)
         {
             case 1:
