@@ -160,15 +160,15 @@ DEFUN_DLD (xtract_tristimulus, args, nargout,
         switch (order)
         {
             case 1:
-                tristimulusExtracted = xtract_tristimulus_1 (spectrumDataToUse, paddedLength/* / 2*/, &f0, &tristimulus);
+                tristimulusExtracted = xtract_tristimulus_1 (spectrumDataToUse, paddedLength, &f0, &tristimulus);
                 break;
 
             case 2:
-                tristimulusExtracted = xtract_tristimulus_2 (spectrumDataToUse, paddedLength/* / 2*/, &f0, &tristimulus);
+                tristimulusExtracted = xtract_tristimulus_2 (spectrumDataToUse, paddedLength, &f0, &tristimulus);
                 break;
 
             case 3:
-                tristimulusExtracted = xtract_tristimulus_3 (spectrumDataToUse, paddedLength / 2, NULL, &tristimulus);
+                tristimulusExtracted = xtract_tristimulus_3 (spectrumDataToUse, paddedLength, &f0, &tristimulus);
                 break;
         }
 
