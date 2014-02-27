@@ -26,14 +26,14 @@
 
 DEFUN_DLD (xtract_spectral_slope, args, nargout,
 "-*- texinfo -*-\n"
-"@deftypefn {Function File} {} xtract_spectral_slope (@var{data})\n"
-"Calculate the spectral slope of the signal @var{data}.\n"
+"@deftypefn {Function File} {} xtract_spectral_slope (@var{data}, @var{f0})\n"
+"Calculate the spectral slope of the signal @var{data} with sample rate @var{f0}.\n"
 "\n"
 "A wrapper for LibXtract\'s xtract_spectral_slope function.\n"
 "@end deftypefn\n")
 {
     // make sure the correct amount of arguments have been passed
-    if (args.length() != 1)
+    if (args.length() != 2)
     {
         print_usage();
         return octave_value_list();
@@ -60,7 +60,11 @@ DEFUN_DLD (xtract_spectral_slope, args, nargout,
             }
         }
 
-        double argumentArray [4] = {0, XTRACT_MAGNITUDE_SPECTRUM, 0, 0};
+        // get the sample rate
+        double sampleRate = args (1).double_value();
+        double sampleRateByN = sampleRate / paddedLength;
+
+        double argumentArray [4] = {sampleRateByN, XTRACT_MAGNITUDE_SPECTRUM, 0, 0};
 
         // assign memory for the output of the xtract_spectrum function
         OCTAVE_LOCAL_BUFFER (double, spectrum, paddedLength);
@@ -71,7 +75,7 @@ DEFUN_DLD (xtract_spectral_slope, args, nargout,
         
         // find the spectral slope
         double spectralSlope = 0;
-        xtract_spectral_slope (spectrum, paddedLength / 2, NULL, &spectralSlope);
+        xtract_spectral_slope (spectrum, paddedLength, NULL, &spectralSlope);
 
         return octave_value (spectralSlope);
     }
